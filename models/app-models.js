@@ -6,6 +6,6 @@ exports.selectTopics = async () => {
 };
 
 exports.selectArticle = async (article_id) => {
-const articles =  await db.query(`SELECT * FROM articles`)
+const articles =  await db.query(`SELECT * FROM articles WHERE article_id = $1`)
 return articles.rows;
 }
