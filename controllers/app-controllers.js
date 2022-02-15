@@ -1,4 +1,5 @@
-const { selectTopics, selectArticle } = require("../models/app-models.js");
+const { selectTopics, selectArticle, changeVotes } = require("../models/app-models.js");
+
 
 exports.getTopics = (req, res, next) => {
   selectTopics().then((topics) => {
@@ -13,4 +14,14 @@ exports.getArticle = (req, res, next) => {
         res.status(200).send({article: article})
     })
     .catch(next)
+}
+
+exports.updateVotes = (req, res, next) => {
+    const {article_id} = req.params
+    const addVotes= req.body.inc_votes 
+changeVotes(article_id, addVotes).then((updatedArticle) => {
+        res.status(200).send(updatedArticle)
+})
+.catch(next)
+
 }
