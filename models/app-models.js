@@ -34,3 +34,13 @@ exports.changeVotes = async (article_id, addVotes = 0) => {
   }
   return updatedArticleVotes.rows[0];
 };
+
+exports.selectUsers = async () => {
+    const getUsers = await db.query(`SELECT username FROM users`)
+    return getUsers.rows
+}
+
+exports.selectAllArticles = async () => {
+    const getArticles = await db.query(`SELECT author, title, article_id, topic, created_at, votes FROM articles ORDER BY created_at DESC`)
+    return getArticles.rows
+}
