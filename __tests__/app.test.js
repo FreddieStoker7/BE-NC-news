@@ -40,11 +40,12 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api/articles/article_id", () => {
-  test("200: should respond with and article object with correct keys and values", () => {
+  test("200: should respond with an article object with correct keys and values", () => {
     return request(app)
       .get("/api/articles/2")
       .expect(200)
       .then(({ body }) => {
+        console.log(body);
         expect(body.article).toEqual(
           expect.objectContaining({
             author: expect.any(String),
@@ -57,24 +58,7 @@ describe("GET /api/articles/article_id", () => {
         );
       });
   });
-  test("200: should respond with and article object with correct keys and values", () => {
-    return request(app)
-      .get("/api/articles/1")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: expect.any(String),
-          votes: 100,
-        });
-      });
-  });
 });
-
 describe("GET api/article/:non-existent_article_id", () => {
   test('404: should respond with "not found" if the resource does not exist (correct data type input) ', () => {
     return request(app)
@@ -106,7 +90,7 @@ describe("PATCH api/articles/:article_id", () => {
       .then(({ body }) => {
         expect(body.updatedVotes).toEqual(
           expect.objectContaining({
-            article_id: expect.any(Number),
+            article_id: 2,
             title: expect.any(String),
             topic: expect.any(String),
             author: expect.any(String),
@@ -124,7 +108,7 @@ describe("PATCH api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.updatedVotes).toEqual({
-          article_id: expect.any(Number),
+          article_id: 2,
           title: expect.any(String),
           topic: expect.any(String),
           author: expect.any(String),
@@ -184,7 +168,7 @@ describe("GET /api/users", () => {
           { username: "rogersop" },
           { username: "lurker" },
         ]);
-        const allUsers = body.users
+        const allUsers = body.users;
         allUsers.forEach((user) => {
           expect(user).toEqual(
             expect.objectContaining({
@@ -203,7 +187,7 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toHaveLength(12);
-        const theArticles = body.articles
+        const theArticles = body.articles;
         theArticles.forEach((article) => {
           expect(article).toEqual(
             expect.objectContaining({
@@ -218,13 +202,49 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test.only('200: returned array should order objects by date_created descending order', () => {
-      return request(app)
-      .get('/api/articles')
+  test("200: returned array should order objects by date_created descending order", () => {
+    return request(app)
+      .get("/api/articles")
       .expect(200)
-      .then(({body}) => {
-          const theArticles = body.articles
-          expect(theArticles).toBeSortedBy('created_at', {descending: true})
-      })
+      .then(({ body }) => {
+        const theArticles = body.articles;
+        expect(theArticles).toBeSortedBy("created_at", { descending: true });
+      });
   });
+});
+
+describe("GET /api/articles/:article_id", () => {
+  test("In addition to what was returned previously, should also now return a new key of comment_count", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body }) => {
+        const theArticle = body.article;
+        console.log(theArticle);
+        expect(theArticle).toEqual(
+          expect.objectContaining({
+            comment_count: "2",
+          })
+        );
+      });
+  });
+});
+describe('GET /api/articles/:article_id/comemnts', () => {
+    test('200: should return an array of comments for the given article_id with the correct properties', () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body})=> {
+            const commentsArr = body.articleComments
+            articleComments.forEach((comments) => {
+                expect(comments).toEqual(expect.objectContaining({
+                    comment_id: 1,
+                    votes: expect.any(Number),
+                    created_at: expect.any(String), author: expect.any(String),
+                    body: expect.any(String)
+
+                }))
+            })
+        })
+    });
 });

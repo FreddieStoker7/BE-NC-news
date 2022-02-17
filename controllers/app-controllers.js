@@ -11,7 +11,7 @@ exports.getTopics = (req, res, next) => {
 
 exports.getArticle = (req, res, next) => {
     const {article_id} = req.params
-    selectArticle(article_id).then((article) => {
+     selectArticle(article_id).then((article) => {
         res.status(200).send({article: article})
     })
     .catch(next)
@@ -19,7 +19,7 @@ exports.getArticle = (req, res, next) => {
 
 exports.updateVotes = (req, res, next) => {
     const {article_id} = req.params
-    const addVotes= req.body.inc_votes 
+    const addVotes = req.body.inc_votes 
 changeVotes(article_id, addVotes).then((updatedArticle) => {
         res.status(200).send({updatedVotes: updatedArticle})
 })
@@ -35,7 +35,15 @@ exports.getUsers = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
     selectAllArticles().then((articles) => {
-        console.log(articles)
         res.status(200).send({articles: articles})
+    }).catch(next)
+}
+
+
+exports.getArticleIdComments = (req, res, next) => {
+    const {article_id} = req.params;
+    console.log(req.params)
+    selectArticleIdComments().then((articleIdComments) => {
+        res.status(200).send({articleComments: articleIdComments})
     }).catch(next)
 }
