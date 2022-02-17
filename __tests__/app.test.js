@@ -289,11 +289,26 @@ describe('GET /api/articles - comment count feature', () => {
         .expect(200)
         .then(({body}) => {
             const allArticles = body.articles
+            console.log(allArticles[0])
             allArticles.forEach((article) => {
                 expect(article).toEqual(expect.objectContaining({
                     comment_count: expect.any(String)
                 }))
             })
+            const article3 = allArticles[0]
+            expect(article3.comment_count).toBe('2')
         })
     });
 });
+// describe('POST /api/articles/article_id/comments', () => {
+//     test('200: Should respond with the posted comment', () => {
+//         return request(app)
+//         .post('/api/articles/1//comments')
+//         .expect(200)
+//         .then(({body}) => {
+//         .send({username: 'freddies'
+//         body: ''})
+//         })
+//     });
+// });
+
