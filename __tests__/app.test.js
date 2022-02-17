@@ -230,14 +230,13 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-describe.only('GET /api/articles/:article_id/comemnts', () => {
+describe('GET /api/articles/:article_id/comments', () => {
     test('200: should return an array of comments for the given article_id with the correct properties', () => {
         return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({body})=> {
             const commentsArr = body.articleComments
-            console.log(commentsArr)
             expect(commentsArr).toHaveLength(11)
             commentsArr.forEach((comments) => {
                 expect(comments).toEqual(expect.objectContaining({
@@ -245,17 +244,16 @@ describe.only('GET /api/articles/:article_id/comemnts', () => {
                     votes: expect.any(Number),
                     created_at: expect.any(String), author: expect.any(String),
                     body: expect.any(String)
-
                 }))
             })
         })
     });
-    test('200: should return an empty array of comments for a valid but non-existent article', () => {
+    test('404: valid but non-existent article should return no article found', () => {
         return request(app)
         .get("/api/articles/60/comments")
-        .expect(200)
+        .expect(404)
         .then(({body}) => {
-            expect(body.articleComments).toEqual([])
+            expect(body.msg).toEqual('no article found for this ID')
         })
     });
     test('404: should return "route not found" for incorrect path', () => {
@@ -264,6 +262,30 @@ describe.only('GET /api/articles/:article_id/comemnts', () => {
         .expect(404)
         .then(({body}) => {
             expect(body.msg).toBe("route not found")
+        })
+    });
+    test.only('200: Should return an empty array for a valid article that exists but has no comments attached to it', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articleComments).toEqual([])
+        })
+    });
+});
+
+describe('GET /api/articles - comment count feature', () => {
+    test('200: the articles array should now have a comment count for each article', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            const allArticles = body.articles
+            allArticles.forEach((article) => {
+                expect(article).toEqual(expect.objectContaining({
+                    comment_count: expect.any(String)
+                }))
+            })
         })
     });
 });
