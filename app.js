@@ -25,7 +25,7 @@ app.use((err, req, res, next) => {
 
 //handles psql errors 
 app.use((err, req, res, next) => {
-    console.log(err.code)
+    console.log(err)
   if (err.code === "22P02") {
     res.status(400).send({ msg: "bad request" });
   } else {

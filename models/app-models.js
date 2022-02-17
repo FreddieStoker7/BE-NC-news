@@ -1,3 +1,4 @@
+const { CommandCompleteMessage } = require("pg-protocol/dist/messages");
 const db = require("../db/connection.js");
 
 exports.selectTopics = async () => {
@@ -10,7 +11,6 @@ exports.selectArticle = async (article_id) => {
     `SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;`,
     [article_id]
   );
-  console.log(articles);
   //if there is a psql error this promise rejects
   const anArticle = articles.rows[0];
   if (!anArticle) {
@@ -44,17 +44,20 @@ exports.selectUsers = async () => {
 
 exports.selectAllArticles = async () => {
   const getArticles = await db.query(
-    `SELECT author, title, article_id, topic, created_at, votes FROM articles ORDER BY created_at DESC;`
+    `SELECT articles.*, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC;`
   );
   return getArticles.rows;
 };
 
 exports.selectArticleIdComments = async (article_id) => {
-    console.log(article_id)
-  const getComments = await db.query(
+  const getComment = db.query(
     `SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1;`,
     [article_id]
   );
-  console.log(getComments.rows);
-  return getComments.rows;
+
+  const isThereAnArticle = exports.selectArticle(article_id);
+
+  const [commentsResult] = await Promise.all([getComment, isThereAnArticle]);
+  const comments = commentsResult.rows;
+  return comments;
 };
