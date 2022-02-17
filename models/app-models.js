@@ -7,9 +7,10 @@ exports.selectTopics = async () => {
 
 exports.selectArticle = async (article_id) => {
   const articles = await db.query(
-    `SELECT * FROM articles WHERE article_id = $1;`,
+    `SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;`,
     [article_id]
   );
+  console.log(articles)
   //if there is a psql error this promise rejects
   const anArticle = articles.rows[0];
   if (!anArticle) {
@@ -44,3 +45,7 @@ exports.selectAllArticles = async () => {
     const getArticles = await db.query(`SELECT author, title, article_id, topic, created_at, votes FROM articles ORDER BY created_at DESC`)
     return getArticles.rows
 }
+
+// exports.selectArticleIdComments = async () => {
+//     const 
+// }
