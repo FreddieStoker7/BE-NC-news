@@ -229,22 +229,41 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
-describe('GET /api/articles/:article_id/comemnts', () => {
+
+describe.only('GET /api/articles/:article_id/comemnts', () => {
     test('200: should return an array of comments for the given article_id with the correct properties', () => {
         return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({body})=> {
             const commentsArr = body.articleComments
-            articleComments.forEach((comments) => {
+            console.log(commentsArr)
+            expect(commentsArr).toHaveLength(11)
+            commentsArr.forEach((comments) => {
                 expect(comments).toEqual(expect.objectContaining({
-                    comment_id: 1,
+                    comment_id: expect.any(Number),
                     votes: expect.any(Number),
                     created_at: expect.any(String), author: expect.any(String),
                     body: expect.any(String)
 
                 }))
             })
+        })
+    });
+    test('200: should return an empty array of comments for a valid but non-existent article', () => {
+        return request(app)
+        .get("/api/articles/60/comments")
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articleComments).toEqual([])
+        })
+    });
+    test('404: should return "route not found" for incorrect path', () => {
+        return request(app)
+        .get("/api/articles/60/commentssss")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("route not found")
         })
     });
 });

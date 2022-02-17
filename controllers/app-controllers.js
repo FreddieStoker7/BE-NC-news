@@ -1,5 +1,5 @@
 const app = require("../app.js");
-const { selectTopics, selectArticle, changeVotes, selectUsers, selectAllArticles} = require("../models/app-models.js");
+const { selectTopics, selectArticle, changeVotes, selectUsers, selectAllArticles, selectArticleIdComments} = require("../models/app-models.js");
 
 
 exports.getTopics = (req, res, next) => {
@@ -42,8 +42,7 @@ exports.getAllArticles = (req, res, next) => {
 
 exports.getArticleIdComments = (req, res, next) => {
     const {article_id} = req.params;
-    console.log(req.params)
-    selectArticleIdComments().then((articleIdComments) => {
+    selectArticleIdComments(article_id).then((articleIdComments) => {
         res.status(200).send({articleComments: articleIdComments})
     }).catch(next)
 }
