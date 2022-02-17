@@ -49,24 +49,15 @@ exports.selectAllArticles = async () => {
   return getArticles.rows;
 };
 
-
 exports.selectArticleIdComments = async (article_id) => {
-  const getComment = await db.query(
+  const getComment = db.query(
     `SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1;`,
     [article_id]
   );
-Promise.all([getComment, selectArticle(article_id)]).then((result) => {
-    console.log(result)
-})
-    
-  if (isThereAnArticle.rows.length === 0) {
-    return Promise.reject({
-        status: 404,
-        msg: "no article found for this ID",
-      });
-  }
-  const comments = getComment.rows
-console.log(comments)
+
+  const isThereAnArticle = exports.selectArticle(article_id);
+
+  const [commentsResult] = await Promise.all([getComment, isThereAnArticle]);
+  const comments = commentsResult.rows;
   return comments;
-  
 };

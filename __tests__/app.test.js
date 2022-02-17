@@ -264,12 +264,20 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(body.msg).toBe("route not found")
         })
     });
-    test.only('200: Should return an empty array for a valid article that exists but has no comments attached to it', () => {
+    test('200: Should return an empty array for a valid article that exists but has no comments attached to it', () => {
         return request(app)
         .get('/api/articles/2/comments')
         .expect(200)
         .then(({body}) => {
             expect(body.articleComments).toEqual([])
+        })
+    });
+    test('400: invalid article_id returns bad request', () => {
+        return request(app)
+        .get('/api/articles/dragons/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("bad request")
         })
     });
 });
