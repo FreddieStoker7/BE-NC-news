@@ -399,13 +399,21 @@ describe.only('GET /api/articles?query=', () => {
     .expect(200)
     .then(({body}) => {
       const articles = body.articles
-      console.log(articles)
       articles.forEach((article) => {
         expect(article).toEqual(
           expect.objectContaining({
             topic: 'mitch'
            }))
       })
+    })
+  });
+  test('400: topic does not exist', () => {
+    return request(app)
+    .get('/api/articles?topic=lampshade')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('topic does not exist')
+      
     })
   });
 });
