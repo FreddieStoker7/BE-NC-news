@@ -1,5 +1,5 @@
 const app = require("../app.js");
-const { selectTopics, selectArticle, changeVotes, selectUsers, selectAllArticles, selectArticleIdComments} = require("../models/app-models.js");
+const { selectTopics, selectArticle, changeVotes, selectUsers, selectAllArticles, selectArticleIdComments, insertArticleComments} = require("../models/app-models.js");
 
 
 exports.getTopics = (req, res, next) => {
@@ -34,7 +34,8 @@ exports.getUsers = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    selectAllArticles().then((articles) => {
+    let query = req.query
+    selectAllArticles(query).then((articles) => {
         res.status(200).send({articles: articles})
     }).catch(next)
 }
@@ -44,5 +45,14 @@ exports.getArticleIdComments = (req, res, next) => {
     const {article_id} = req.params;
     selectArticleIdComments(article_id).then((articleIdComments) => {
         res.status(200).send({articleComments: articleIdComments})
+    }).catch(next)
+}
+
+exports.addArticleComments = (req, res, next) => {
+    const {article_id} = req.params
+    const {username, body} = req.body
+    insertArticleComments(article_id, body, username).then((result)=> {
+            const newComment = result.rows[0]
+        res.status(200).send({comment: newComment.body})
     }).catch(next)
 }
