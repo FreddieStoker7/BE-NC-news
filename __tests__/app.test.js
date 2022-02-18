@@ -206,7 +206,6 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const theArticles = body.articles;
-        console.log(theArticles)
         expect(theArticles).toBeSortedBy("created_at", { descending: true });
       });
   });
@@ -439,4 +438,19 @@ describe('GET /api/articles?query=', () => {
     expect(articles).toEqual([])
     })
   });
+});
+//need to check that it has actually deleted it
+describe('DELETE /api/comments/:comment_id', () => {
+  test('204: should return just the status code ', () => {
+    return request(app)
+  .delete('/api/comments/1')
+  .expect(204)
+  .then(({body}) => {
+  expect(body).toEqual({})
+  })
+  });
+});
+
+describe('Name of the group', () => {
+  
 });

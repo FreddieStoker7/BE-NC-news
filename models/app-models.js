@@ -66,9 +66,7 @@ if (topic === undefined) {
 
 } else {
    const rows = await topicChecker(topic) 
-     //console.log(rows.length)
     if (rows.length === 0) {
-      console.log(rows.length)
       return Promise.reject({status: 404, msg: "topic does not exist"})
     }
 
@@ -104,3 +102,7 @@ exports.insertArticleComments = async (article_id, body, username) => {
   return insertComment
 }
 
+exports.deleteCommentsById = async (article_id) => {
+  const deleteComment = await db.query(`DELETE FROM comments WHERE article_id = $1`, [article_id])
+  return deleteComment.rows
+}
