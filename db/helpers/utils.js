@@ -1,3 +1,5 @@
+const db = require("../connection.js");
+
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
@@ -20,3 +22,10 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
+
+
+exports.topicChecker = async (topic) => {
+    const checkDb = await db.query(`SELECT * FROM topics WHERE slug = $1`, [topic])
+
+    return checkDb.rows
+}

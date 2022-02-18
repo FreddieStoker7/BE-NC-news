@@ -1,5 +1,6 @@
 
 const db = require("../db/connection.js");
+const {topicChecker} = require('../db/helpers/utils.js')
 
 exports.selectTopics = async () => {
   const topics = await db.query("SELECT * FROM topics;");
@@ -45,8 +46,6 @@ exports.selectUsers = async () => {
 exports.selectAllArticles = async (incomingQuery) => {
 const {sort_by='created_at', order='desc', topic} = incomingQuery
 
-console.log(sort_by, order, topic)
-
 if (!['title', 'votes', 'author', 'topic', 'created_at'].includes(sort_by)) {
   return Promise.reject({status: 400, msg: 'Invalid sort column'})
 }
@@ -64,7 +63,15 @@ if (topic === undefined) {
     `SELECT articles.*, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`
   );
   return getArticles.rows;
+
 } else {
+   const rows = await topicChecker(topic) 
+     //console.log(rows.length)
+    if (rows.length === 0) {
+      console.log(rows.length)
+      return Promise.reject({status: 404, msg: "topic does not exist"})
+    }
+
   const getArticlesbyTopic = await db.query(
     `SELECT articles.*, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic = $1 GROUP BY articles.article_id ORDER BY ${sort_by} ${order} ;`, [topic]
   );

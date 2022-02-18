@@ -202,10 +202,11 @@ describe("GET /api/articles", () => {
   });
   test("200: returned array should order objects by date_created descending order", () => {
     return request(app)
-      .get("/api/articles?order=asc")
+      .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         const theArticles = body.articles;
+        console.log(theArticles)
         expect(theArticles).toBeSortedBy("created_at", { descending: true });
       });
   });
@@ -348,7 +349,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-describe.only('GET /api/articles?query=', () => {
+describe('GET /api/articles?query=', () => {
   test('200: SORT BY query sorts by a valid column ', () => {
       return request(app)
       .get('/api/articles?sort_by=title')
@@ -372,7 +373,6 @@ describe.only('GET /api/articles?query=', () => {
     .expect(200)
     .then(({body}) => {
       const articles = body.articles
-      //console.log(articles)
       expect(articles).toBeSortedBy('created_at', {ascending: true})
     })
   });
@@ -407,13 +407,36 @@ describe.only('GET /api/articles?query=', () => {
       })
     })
   });
-  test('400: topic does not exist', () => {
+  test('404: topic does not exist', () => {
     return request(app)
-    .get('/api/articles?topic=lampshade')
-    .expect(400)
+    .get('/api/articles?topic=lamp')
+    .expect(404)
     .then(({body}) => {
       expect(body.msg).toBe('topic does not exist')
-      
+    })
+  });
+  test('200: returns correct array when given topic, order and sort_by queries', () => {
+    return request(app)
+    .get('/api/articles?sort_by=title&order=asc&topic=mitch')
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles
+      articles.forEach((article) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            topic: 'mitch'
+           }))
+      })
+      expect(articles).toBeSortedBy('title', {ascending: true})
+    })
+  });
+  test('200: query for topic that does exist but doesnt have any articles attached to it returns an empty array', () => {
+    return request(app)
+    .get('/api/articles?topic=paper')
+    .expect(200)
+    .then(({body}) => {
+    const articles = body.articles
+    expect(articles).toEqual([])
     })
   });
 });
