@@ -449,8 +449,23 @@ describe('DELETE /api/comments/:comment_id', () => {
   expect(body).toEqual({})
   })
   });
+  test('404: should return Not Found for a misspelling of comments', () => {
+    return request(app)
+    .delete('/api/comentz/1')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toEqual('route not found')
+    })
+  });
+  test('400: should return comment Not Found for a non-existent comment', () => {
+    return request(app)
+    .delete('/api/comments/99')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toEqual('comment does not exist')
+    })
+  });
 });
+ 
 
-describe('Name of the group', () => {
-  
-});
+

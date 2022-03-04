@@ -1,8 +1,9 @@
 const express = require("express");
-const { getTopics, getArticle, updateVotes, getUsers, getAllArticles, getArticleIdComments, addArticleComments, deleteComment } = require("./controllers/app-controllers.js");
+const { getTopics, getArticle, updateVotes, getUsers, getAllArticles, getArticleIdComments, addArticleComments, deleteComment, getAllEndpoints} = require("./controllers/app-controllers.js");
 const app = express();
 app.use(express.json());
 
+app.get("/api", getAllEndpoints)
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticle);
 app.patch("/api/articles/:article_id", updateVotes); 
@@ -14,10 +15,10 @@ app.delete('/api/comments/:comment_id', deleteComment)
 
 
 
-//
+
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
-    //console.log(err)
+    console.log(err)
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);

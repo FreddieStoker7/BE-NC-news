@@ -1,6 +1,7 @@
 
 const db = require("../db/connection.js");
 const {topicChecker} = require('../db/helpers/utils.js')
+const {readFile} = require("fs/promises")
 
 exports.selectTopics = async () => {
   const topics = await db.query("SELECT * FROM topics;");
@@ -102,7 +103,12 @@ exports.insertArticleComments = async (article_id, body, username) => {
   return insertComment
 }
 
-exports.deleteCommentsById = async (article_id) => {
-  const deleteComment = await db.query(`DELETE FROM comments WHERE article_id = $1`, [article_id])
-  return deleteComment.rows
+exports.deleteCommentsById = async (comment_id) => {
+  const deleteComment = await db.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`, [comment_id])
+  const deletedComment = deleteComment.rows
+  if (deletedComment.length === 0) {
+    return Promise.reject({status: 400, msg: "comment does not exist"})
+  }
+  return deletedComment
 }
+

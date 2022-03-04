@@ -1,4 +1,4 @@
-{
+ {
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -23,5 +23,88 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an object with the requested article",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an array containing the requested article",
+    "queries": [],
+    "exampleRequestBody": { "inc_votes": 2 },
+    "exampleResponse": {
+      "updatedVotes": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "votes": 2
+        }
+      ]
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of user objects",
+    "queries": [],
+    "exampleRequestBody": [],
+    "exampleResponse": {
+      "users": [
+          { "username": "butter_bridge" },
+          { "username": "icellusedkars" },
+          { "username": "rogersop" },
+          { "username": "lurker" }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for that particular article_id",
+    "queries": [],
+    "exampleRequestBody": [],
+    "exampleResponse": {
+      "users": [
+        {
+        "comment_id": 18,
+        "votes": 16,
+        "created_at": "2020-07-21T00:20:00.000Z",
+        "author": "butter_bridge",
+        "body": "This morning, I showered for nine minutes."
+      }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves an array with the new comment that has been posted",
+    "queries": [],
+    "exampleRequestBody": [],
+    "exampleResponse": {
+      "comment": [
+        {
+        "comment_id": 18,
+        "votes": 16,
+        "created_at": "2020-07-21T00:20:00.000Z",
+        "author": "butter_bridge",
+        "body": "This morning, I showered for nine minutes."
+      }
+      ]
+    }
+  },
+  "DELETE /api/articles/:article_id/comments": {
+    "description": "deletes the specified comment returning nothing back",
+    "queries": [],
+    "exampleRequestBody": [],
+    "exampleResponse": {}
   }
 }

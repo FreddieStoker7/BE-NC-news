@@ -1,5 +1,6 @@
 const app = require("../app.js");
-const { selectTopics, selectArticle, changeVotes, selectUsers, selectAllArticles, selectArticleIdComments, insertArticleComments,deleteCommentsById} = require("../models/app-models.js");
+const { selectTopics, selectArticle, changeVotes, selectUsers, selectAllArticles, selectArticleIdComments, insertArticleComments,deleteCommentsById, selectAllEndpoints} = require("../models/app-models.js");
+const availableEndpoints = require('../endpoints.json')
 
 
 exports.getTopics = (req, res, next) => {
@@ -58,8 +59,12 @@ exports.addArticleComments = (req, res, next) => {
 }
 
 exports.deleteComment = (req, res, next) => {
-    const {article_id} = req.params
-    deleteCommentsById(article_id).then((result) => {
+    const {comment_id} = req.params
+    deleteCommentsById(comment_id).then((result) => {
         res.status(204).send()
     })
+}
+
+exports.getAllEndpoints = (req, res, next) => {
+        res.status(200).send(availableEndpoints)
 }
