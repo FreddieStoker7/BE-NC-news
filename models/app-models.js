@@ -1,7 +1,5 @@
-
 const db = require("../db/connection.js");
 const {topicChecker} = require('../db/helpers/utils.js')
-const {readFile} = require("fs/promises")
 
 exports.selectTopics = async () => {
   const topics = await db.query("SELECT * FROM topics;");

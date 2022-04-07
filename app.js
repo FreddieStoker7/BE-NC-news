@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 const cors = require('cors');
 
-app.use(cors());
+app.use(cors(corsConfig));
 
 app.get("/api", getAllEndpoints)
 app.get("/api/topics", getTopics);
@@ -16,12 +16,20 @@ app.get('/api/articles/:article_id/comments', getArticleIdComments)
 app.post('/api/articles/:article_id/comments', addArticleComments)
 app.delete('/api/comments/:comment_id', deleteComment)
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", false);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept,  x-access-token"
+  );
+  next();
+});
 
 
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
-    console.log(err)
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
@@ -39,7 +47,6 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  //console.log(err)
 if (err.code === "23503") {
   res.status(404).send({ msg: "article doesnt exist" });
 } else {
