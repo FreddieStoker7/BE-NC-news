@@ -2,18 +2,19 @@ const express = require("express");
 const { getTopics, getArticle, updateVotes, getUsers, getAllArticles, getArticleIdComments, addArticleComments, deleteComment, getAllEndpoints} = require("./controllers/app-controllers.js");
 const app = express();
 const cors = require('cors');
-const corsConfig = {
-  origin: 'localhost',
-  credentials: false,
-};
+
 app.use(express.json());
 
-app.use(cors(corsConfig));
+app.use(cors());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
+  
 });
+
+
 
 app.get("/api", getAllEndpoints)
 app.get("/api/topics", getTopics);
