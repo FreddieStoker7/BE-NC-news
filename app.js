@@ -4,7 +4,17 @@ const app = express();
 app.use(express.json());
 const cors = require('cors');
 
+const corsConfig = {
+  origin: "localhost",
+  credentials: false,
+};
+
 app.use(cors(corsConfig));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 app.get("/api", getAllEndpoints)
 app.get("/api/topics", getTopics);
@@ -16,10 +26,7 @@ app.get('/api/articles/:article_id/comments', getArticleIdComments)
 app.post('/api/articles/:article_id/comments', addArticleComments)
 app.delete('/api/comments/:comment_id', deleteComment)
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
+
 
 
 
