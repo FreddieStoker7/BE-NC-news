@@ -3,7 +3,7 @@ const { getTopics, getArticle, updateVotes, getUsers, getAllArticles, getArticle
 const app = express();
 const cors = require('cors');
 const corsConfig = {
-  origin: 84.69.213.234,
+  origin: 'localhost',
   credentials: false,
 };
 app.use(express.json());
