@@ -29,6 +29,7 @@ app.delete('/api/comments/:comment_id', deleteComment)
 
 
 
+ //ERROR HANDLING section 
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
@@ -38,9 +39,8 @@ app.use((err, req, res, next) => {
   }
 });
 
-//handles psql errors 
+
 app.use((err, req, res, next) => {
-    //console.log(err)
   if (err.code === "22P02"|| err.code === "23502") {
     res.status(400).send({ msg: "bad request" });
   } else {
@@ -55,7 +55,6 @@ if (err.code === "23503") {
   next(err);
 }
 });
-
 
 
 app.use((err, req, res, next) => {
