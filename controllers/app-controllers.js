@@ -54,7 +54,7 @@ exports.addArticleComments = (req, res, next) => {
     const {username, body} = req.body
     insertArticleComments(article_id, body, username).then((result)=> {
             const newComment = result.rows[0]
-        res.status(200).send({comment: newComment.body})
+        res.status(200).send({comment: newComment})
     }).catch(next)
 }
 

@@ -308,7 +308,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "icellusedkars", body: "yoyoyoyo" })
       .expect(200)
       .then(({ body }) => {
-        expect(body.comment).toEqual("yoyoyoyo");
+        expect(body.comment).toEqual({"article_id": 1, "author": "icellusedkars", "body": "yoyoyoyo", "comment_id": 19, "created_at": "2022-04-20T14:39:57.629Z", "votes": 0});
       });
   });
   test("404: valid but non existent Id should return article not found", () => {
